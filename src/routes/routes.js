@@ -19,9 +19,14 @@ routes.get("/api/vetores/coletar", async (req, res) => {
 });
 
 routes.delete("/api/vetores/deletar", async (req, res) => {
-  const posts = await Post.find();
-
-  await posts.remove();
+  try {
+    const response = await Post.find();
+    for (let i = 0; i < response.length; i++) {
+      const posts = await Post.findOneAndDelete();
+    }
+  } catch (err) {
+    console.log(err);
+  }
 
   return res.send();
 });

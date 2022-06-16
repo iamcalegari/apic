@@ -1,12 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+require("dotenv").config();
 
 const routes = require("./routes/routes");
 
 const app = express();
+console.log(process.env.MONGO_URL);
 
-mongoose.connect(process.env.MONGO_URL, {
+mongoose.connect(`${process.env.MONGO_URL}`, {
   useNewUrlParser: true,
 });
 
