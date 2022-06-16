@@ -18,4 +18,12 @@ routes.get("/api/vetores/coletar", async (req, res) => {
   return res.json(coletarVetor);
 });
 
+routes.delete("/api/vetores/deletar", async (req, res) => {
+  const post = await Post.find();
+
+  await post.remove();
+
+  return res.send();
+});
+
 module.exports = routes;
