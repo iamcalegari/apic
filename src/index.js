@@ -16,5 +16,5 @@ app.use(routes);
 
 const porta = 3333;
 app.listen(porta, () => {
-  console.log(`🚀 - Express started at ${porta}`);
+  console.log(`🚀  Express started at ${porta}`);
 });
