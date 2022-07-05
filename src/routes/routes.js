@@ -23,7 +23,13 @@ routes.get("/api/vetores/coletarall", async (req, res) => {
 
   const vetores = coletarVetor.map((vetor) => vetor.vetor);
 
-  return res.json(vetores);
+  let arr = [];
+
+  vetores.forEach((vetor) => {
+    arr = arr.concat(vetor);
+  });
+
+  return res.json(arr);
 });
 
 routes.delete("/api/vetores/deletar", async (req, res) => {
