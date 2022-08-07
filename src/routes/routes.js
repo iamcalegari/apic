@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = dirname(__filename);
 
-routes.get("api/vetores/baixar/JSON", async (req, res) => {
+routes.get("/api/vetores/baixar/JSON", async (req, res) => {
   res.download(__dirname + "/public/vetor.json");
 }),
   routes.post("/api/vetores/publicar", async (req, res) => {
