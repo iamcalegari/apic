@@ -2,8 +2,8 @@ const routes = require("express").Router();
 const { coletarVetor } = require("../services/coletarVetores");
 const Post = require("../models/post.model");
 
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+const { dirname } = require("path");
+const { fileURLToPath } = require("url");
 
 const __filename = fileURLToPath(import.meta.url);
 
