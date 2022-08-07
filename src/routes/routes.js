@@ -2,15 +2,8 @@ const routes = require("express").Router();
 const { coletarVetor } = require("../services/coletarVetores");
 const Post = require("../models/post.model");
 
-const { dirname } = require("path");
-const { fileURLToPath } = require("url");
-
-const filename = fileURLToPath(import.meta.url);
-
-const __dirname = dirname(filename);
-
 routes.get("/api/vetores/baixar/JSON", async (req, res) => {
-  res.download(__dirname + "/public/vetor.json");
+  res.download("./public/vetor.json");
 }),
   routes.post("/api/vetores/publicar", async (req, res) => {
     const { vetor } = req.body;
