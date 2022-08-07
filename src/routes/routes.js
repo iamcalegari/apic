@@ -2,15 +2,18 @@ const routes = require("express").Router();
 const { coletarVetor } = require("../services/coletarVetores");
 const Post = require("../models/post.model");
 
-routes.post("/api/vetores/publicar", async (req, res) => {
-  const { vetor } = req.body;
+routes.get("api/vetores/baixar/JSON", async (req, res) => {
+  res.download(__dirname + "/public/vetor.json");
+}),
+  routes.post("/api/vetores/publicar", async (req, res) => {
+    const { vetor } = req.body;
 
-  const vetores = await Post.create({
-    vetor,
+    const vetores = await Post.create({
+      vetor,
+    });
+
+    return res.json(vetores);
   });
-
-  return res.json(vetores);
-});
 
 routes.get("/api/vetores/coletar", async (req, res) => {
   const coletarVetor = await Post.find();
