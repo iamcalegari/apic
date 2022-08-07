@@ -5,9 +5,9 @@ const Post = require("../models/post.model");
 const { dirname } = require("path");
 const { fileURLToPath } = require("url");
 
-const __filename = fileURLToPath(import.meta.url);
+const filename = fileURLToPath(import.meta.url);
 
-const __dirname = dirname(__filename);
+const __dirname = dirname(filename);
 
 routes.get("/api/vetores/baixar/JSON", async (req, res) => {
   res.download(__dirname + "/public/vetor.json");
