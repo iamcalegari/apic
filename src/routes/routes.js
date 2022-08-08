@@ -5,18 +5,20 @@ const { resolve } = require("path");
 const { coletarVetor } = require("../services/coletarVetores");
 const Post = require("../models/post.model");
 
-routes.get("/api/vetores/:id/baixar", async (req, res) => {
+routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
   const { vetor } = await Post.findById(req.params.id);
 
   console.log(vetor);
 
   const response = fs.writeFileSync(
-    resolve(__dirname, "..", "..", "public", "vetor.json"),
+    resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`),
     JSON.stringify(vetor),
     "utf-8"
   );
 
-  res.download(resolve(__dirname, "..", "..", "public", "vetor.json"));
+  res.download(
+    resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`)
+  );
 
   // fs.unlink(`./vetor.json`, (err) => {
   //   if (err) throw err;
