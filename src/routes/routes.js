@@ -16,8 +16,6 @@ routes.get("/api/vetores/:id/baixar", async (req, res) => {
     "utf-8"
   );
 
-  console.log(response);
-
   res.download(resolve(__dirname, "..", "..", "public", "vetor.json"));
 
   // fs.unlink(`./vetor.json`, (err) => {
