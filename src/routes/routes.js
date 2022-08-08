@@ -7,6 +7,8 @@ const Post = require("../models/post.model");
 routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
   const vetorColetado = await Post.findById(req.params.id);
 
+  console.log(vetorColetado);
+
   fs.writeFile(
     `./vetor.${req.params.format}`,
     JSON.stringify(vetorColetado),
