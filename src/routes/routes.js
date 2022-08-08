@@ -24,6 +24,33 @@ routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
   //   if (err) throw err;
   // });
 }),
+  routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
+    const coletarVetor = await Post.find();
+
+    const vetores = coletarVetor
+      .slice(req.params.range)
+      .map((vetor) => vetor.vetor);
+
+    let arr = [];
+
+    vetores.forEach((vetor) => {
+      arr = arr.concat(vetor);
+    });
+
+    const response = fs.writeFileSync(
+      resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`),
+      JSON.stringify(arr),
+      "utf-8"
+    );
+
+    res.download(
+      resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`)
+    );
+
+    // fs.unlink(`./vetor.json`, (err) => {
+    //   if (err) throw err;
+    // });
+  }),
   routes.post("/api/vetores/publicar", async (req, res) => {
     const { vetor } = req.body;
 
