@@ -28,7 +28,7 @@ routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
     const coletarVetor = await Post.find();
 
     const vetores = coletarVetor
-      .slice(req.params.range)
+      .slice(0, req.params.range)
       .map((vetor) => vetor.vetor);
 
     let arr = [];
