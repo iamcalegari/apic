@@ -10,17 +10,17 @@ routes.get("/api/vetores/:id/baixar", async (req, res) => {
 
   console.log(vetor);
 
-  fs.writeFile(
-    resolve(__dirname, "..", "..", "public", "vetor.json"),
-    JSON.stringify(vetor),
-    "utf-8",
-    (error, result) => {
-      if (error) {
-        console.error(error);
-      }
-      console.log(result);
-    }
-  );
+  // fs.writeFile(
+  //   resolve(__dirname, "..", "..", "public", "vetor.json"),
+  //   JSON.stringify(vetor),
+  //   "utf-8",
+  //   (error, result) => {
+  //     if (error) {
+  //       console.error(error);
+  //     }
+  //     console.log(result);
+  //   }
+  // );
 
   res.download(resolve(__dirname, "..", "..", "public", "vetor.json"));
 
