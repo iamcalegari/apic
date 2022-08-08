@@ -6,21 +6,17 @@ const { coletarVetor } = require("../services/coletarVetores");
 const Post = require("../models/post.model");
 
 routes.get("/api/vetores/:id/baixar", async (req, res) => {
-  const vetor = await Post.findById(req.params.id);
+  const { vetor } = await Post.findById(req.params.id);
 
   console.log(vetor);
 
-  fs.writeFile(
+  const response = fs.writeFileSync(
     resolve(__dirname, "..", "..", "public", "vetor.json"),
     JSON.stringify(vetor),
-    "utf-8",
-    (error, result) => {
-      if (error) {
-        console.error(error);
-      }
-      console.log(result);
-    }
+    "utf-8"
   );
+
+  console.log(response);
 
   res.download(resolve(__dirname, "..", "..", "public", "vetor.json"));
 
