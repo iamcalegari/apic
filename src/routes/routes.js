@@ -5,11 +5,11 @@ const { coletarVetor } = require("../services/coletarVetores");
 const Post = require("../models/post.model");
 
 routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
-  const vetorColetado = await Post.findById(req.params.id);
+  const { vetor } = await Post.findById(req.params.id);
 
-  console.log(vetorColetado);
+  console.log(vetor);
 
-  fs.writeFile(`./vetor.json`, JSON.stringify(vetorColetado), (err) => {
+  fs.writeFile("./vetor.json", JSON.stringify(vetor), "utf-8", (err) => {
     if (err) throw err;
     console.log("The file has been saved!");
   });
