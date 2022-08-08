@@ -10,7 +10,7 @@ routes.get("/api/vetores/:id/baixar", async (req, res) => {
   console.log(vetor);
 
   fs.writeFile(
-    "./test.json",
+    __dirname + "./test.json",
     JSON.stringify(vetor),
     "utf-8",
     (error, result) => {
