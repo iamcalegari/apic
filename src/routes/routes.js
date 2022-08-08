@@ -16,9 +16,9 @@ routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
 
   res.download(`./vetor.json`);
 
-  fs.unlink(`./vetor.json`, (err) => {
-    if (err) throw err;
-  });
+  // fs.unlink(`./vetor.json`, (err) => {
+  //   if (err) throw err;
+  // });
 }),
   routes.post("/api/vetores/publicar", async (req, res) => {
     const { vetor } = req.body;
