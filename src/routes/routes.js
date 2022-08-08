@@ -1,5 +1,6 @@
 const routes = require("express").Router();
 const fs = require("fs");
+const { resolve } = require("path");
 
 const { coletarVetor } = require("../services/coletarVetores");
 const Post = require("../models/post.model");
@@ -10,7 +11,7 @@ routes.get("/api/vetores/:id/baixar", async (req, res) => {
   console.log(vetor);
 
   fs.writeFile(
-    __dirname + "/test.json",
+    resolve(__dirname, "..", "..", "public", "vetor.json"),
     JSON.stringify(vetor),
     "utf-8",
     (error, result) => {
