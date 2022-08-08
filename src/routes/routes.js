@@ -6,7 +6,7 @@ const { coletarVetor } = require("../services/coletarVetores");
 const Post = require("../models/post.model");
 
 routes.get("/api/vetores/:id/baixar", async (req, res) => {
-  const { vetor } = await Post.findById(req.params.id);
+  const vetor = await Post.findById(req.params.id);
 
   console.log(vetor);
 
