@@ -9,18 +9,14 @@ routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
 
   console.log(vetorColetado);
 
-  fs.writeFile(
-    `./vetor.${req.params.format}`,
-    JSON.stringify(vetorColetado),
-    (err) => {
-      if (err) throw err;
-      console.log("The file has been saved!");
-    }
-  );
+  fs.writeFile(`./vetor.json`, JSON.stringify(vetorColetado), (err) => {
+    if (err) throw err;
+    console.log("The file has been saved!");
+  });
 
-  res.download(`./vetor.${req.params.format}`);
+  res.download(`./vetor.json`);
 
-  fs.unlink(`./vetor.${req.params.format}`, (err) => {
+  fs.unlink(`./vetor.json`, (err) => {
     if (err) throw err;
   });
 }),
