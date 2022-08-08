@@ -4,17 +4,24 @@ const fs = require("fs");
 const { coletarVetor } = require("../services/coletarVetores");
 const Post = require("../models/post.model");
 
-routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
+routes.get("/api/vetores/:id/baixar", async (req, res) => {
   const { vetor } = await Post.findById(req.params.id);
 
   console.log(vetor);
 
-  fs.writeFile("./vetor.json", JSON.stringify(vetor), "utf-8", (err) => {
-    if (err) throw err;
-    console.log("The file has been saved!");
-  });
+  fs.writeFile(
+    "./test.json",
+    JSON.stringify(vetor),
+    "utf-8",
+    (error, result) => {
+      if (error) {
+        console.error(error);
+      }
+      console.log(result);
+    }
+  );
 
-  res.download(`./vetor.json`);
+  res.download(`./test.json`);
 
   // fs.unlink(`./vetor.json`, (err) => {
   //   if (err) throw err;
