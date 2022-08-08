@@ -1,9 +1,22 @@
 const routes = require("express").Router();
+const fs = require("fs");
+
 const { coletarVetor } = require("../services/coletarVetores");
 const Post = require("../models/post.model");
 
-routes.get("/api/vetores/baixar/JSON", async (req, res) => {
-  res.download("./public/vetor.json");
+routes.get("/api/vetores/:id/baixar/JSON", async (req, res) => {
+  const vetorColetado = await Post.findById(req.params.id);
+
+  fs.writeFile("./vetor.json", JSON.stringify(vetorColetado), (err) => {
+    if (err) throw err;
+    console.log("The file has been saved!");
+  });
+
+  res.download("./vetor.json");
+
+  fs.unlink("./vetor.json", (err) => {
+    if (err) throw err;
+  });
 }),
   routes.post("/api/vetores/publicar", async (req, res) => {
     const { vetor } = req.body;
