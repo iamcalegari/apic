@@ -22,7 +22,7 @@ routes.get("/api/vetores/:id/baixar", async (req, res) => {
     }
   );
 
-  res.download(`./test.json`);
+  res.download(resolve(__dirname, "..", "..", "public", "vetor.json"));
 
   // fs.unlink(`./vetor.json`, (err) => {
   //   if (err) throw err;
