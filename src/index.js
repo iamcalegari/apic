@@ -18,5 +18,5 @@ app.use(routes);
 
 const porta = process.env.PORT || 3000;
 app.listen(porta, () => {
-  console.log(`🚀  Express started at ${porta}`);
+  console.log(`🚀 - Express started at ${porta}`);
 });
