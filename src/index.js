@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use(routes);
 
-const porta = process.env.PORT || 34567;
+const porta = process.env.PORT || 3000;
 app.listen(porta, () => {
   console.log(`🚀  Express started at ${porta}`);
 });
