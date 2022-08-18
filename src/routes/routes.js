@@ -73,7 +73,10 @@ routes.get("/api/vetores/coletar", async (req, res) => {
 // Rota para listar todos os ids dos vetores
 routes.get("/api/vetores/coletarid", async (req, res) => {
   const vetoresColetados = await coletarVetor();
-  const ids = vetoresColetados.map((vetor) => vetor._id);
+  const ids = vetoresColetados.map((vetor) => {
+    _id: vetor._id;
+    tamanho: vetor.tamanho;
+  });
 
   return res.json(ids);
 });
