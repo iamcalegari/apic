@@ -3,7 +3,7 @@ const fs = require("fs");
 const { resolve } = require("path");
 
 const Post = require("../models/post.model");
-import split from "../services/cortar-vetores";
+const split = require("../services/cortar-vetores");
 
 routes.get("/api/vetores/split/:m", async (req, res) => {
   const array = split(req.params.m);
