@@ -50,4 +50,4 @@ const corte = (array, index) => {
   return arrayCortado;
 };
 
-export default split;
+module.exports = split;
