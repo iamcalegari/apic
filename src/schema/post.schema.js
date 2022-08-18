@@ -1,9 +1,4 @@
 const jsonSchema = {
-  _id: {
-    type: Number,
-    unique: true,
-    index: true,
-  },
   dataHora: {
     type: Date,
     description: "Data e hoje em que o array foi recebido pela API.",
