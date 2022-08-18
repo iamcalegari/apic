@@ -25,6 +25,7 @@ const split = async (m) => {
   arrayCortado.map(async (vetor) => {
     await Post.create({
       vetor,
+      tamanho: vetor.length,
     });
   });
 
