@@ -1,6 +1,6 @@
 const Post = require("../models/post.model");
 
-const split = (m) => {
+const split = async (m) => {
   const coletarVetor = await Post.find();
 
   const vetores = coletarVetor.map((vet) => vet.vetor);
@@ -9,7 +9,7 @@ const split = (m) => {
 
   vetores.forEach((vetor) => {
     arr = arr.concat(vetor);
-  });  
+  });
 
   const arrayCortado = corte(arr, +m);
 
@@ -29,7 +29,7 @@ const split = (m) => {
   });
 
   return arrayCortado;
-}
+};
 
 const corte = (array, index) => {
   const numeroVetores = Math.ceil(array.length / index);
@@ -49,6 +49,5 @@ const corte = (array, index) => {
   }
   return arrayCortado;
 };
-
 
 export default split;
