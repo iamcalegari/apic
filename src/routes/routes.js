@@ -4,6 +4,7 @@ const { resolve } = require("path");
 
 const Post = require("../models/post.model");
 const split = require("../services/cortar-vetores");
+const coletarVetor = require("../services/coletarVetores");
 
 routes.get("/api/vetores/split/:m", async (req, res) => {
   const array = split(req.params.m);
@@ -16,6 +17,7 @@ routes.post("/api/vetores/publicar", async (req, res) => {
 
   const vetores = await Post.create({
     vetor,
+    tamanho: vetor.length,
   });
 
   return res.json(vetores);
@@ -27,7 +29,7 @@ routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
 
   console.log(vetor);
 
-  const response = fs.writeFileSync(
+  fs.writeFileSync(
     resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`),
     JSON.stringify(vetor),
     "utf-8"
@@ -36,51 +38,51 @@ routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
   res.download(
     resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`)
   );
-}),
-  // Rota para baixar todos os vetores da lista
-  routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
-    const coletarVetor = await Post.find();
+});
 
-    const vetores = coletarVetor
-      .slice(0, req.params.range)
-      .map((vetor) => vetor.vetor);
+// Rota para baixar todos os vetores da lista
+routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
+  const vetoresColetados = await coletarVetor();
+  const vetores = vetoresColetados
+    .slice(0, req.params.range)
+    .map((vetor) => vetor.vetor);
+  let arr = [];
 
-    let arr = [];
-
-    vetores.forEach((vetor) => {
-      arr = arr.concat(vetor);
-    });
-
-    const response = fs.writeFileSync(
-      resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`),
-      JSON.stringify(arr),
-      "utf-8"
-    );
-
-    res.download(
-      resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`)
-    );
-  }),
-  // Rota para listar todos os vetores
-  routes.get("/api/vetores/coletar", async (req, res) => {
-    const coletarVetor = await Post.find();
-
-    return res.json(coletarVetor);
+  vetores.forEach((vetor) => {
+    arr = arr.concat(vetor);
   });
+
+  fs.writeFileSync(
+    resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`),
+    JSON.stringify(arr),
+    "utf-8"
+  );
+
+  res.download(
+    resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`)
+  );
+});
+
+// Rota para listar todos os vetores
+routes.get("/api/vetores/coletar", async (req, res) => {
+  const vetoresColetados = await coletarVetor();
+
+  return res.json(vetoresColetados);
+});
 
 // Rota para listar todos os ids dos vetores
 routes.get("/api/vetores/coletarid", async (req, res) => {
-  const coletarVetor = await Post.find();
-  const ids = coletarVetor.map((vetor) => vetor._id);
+  const vetoresColetados = await coletarVetor();
+  const ids = vetoresColetados.map((vetor) => vetor._id);
 
   return res.json(ids);
 });
 
 // Rota para listar os vetores em um vetor so
 routes.get("/api/vetores/coletarall", async (req, res) => {
-  const coletarVetor = await Post.find();
+  const vetoresColetados = await coletarVetor();
 
-  const vetores = coletarVetor.map((vetor) => vetor.vetor);
+  const vetores = vetoresColetados.map((vetor) => vetor.vetor);
 
   let arr = [];
 
@@ -94,7 +96,7 @@ routes.get("/api/vetores/coletarall", async (req, res) => {
 // Rota para deletar todos os vetores
 routes.delete("/api/vetores/deletar", async (req, res) => {
   try {
-    const response = await Post.find();
+    const response = await coletarVetor();
     for (let i = 0; i < response.length; i++) {
       const posts = await Post.findOneAndDelete();
     }

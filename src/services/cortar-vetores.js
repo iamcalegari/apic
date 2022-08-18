@@ -16,7 +16,7 @@ const split = async (m) => {
   try {
     const response = await Post.find();
     for (let i = 0; i < response.length; i++) {
-      const posts = await Post.findOneAndDelete();
+      await Post.findOneAndDelete();
     }
   } catch (err) {
     console.log(err);
