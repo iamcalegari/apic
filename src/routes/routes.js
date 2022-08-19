@@ -25,19 +25,31 @@ routes.post("/api/vetores/publicar", async (req, res) => {
 });
 
 // Rota para baixar cada vetor da lista
-routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
+routes.get("/api/vetores/:id/:index/baixar/:format", async (req, res) => {
   const { vetor } = await Post.findById(req.params.id);
 
   console.log(vetor);
 
   fs.writeFileSync(
-    resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`),
+    resolve(
+      __dirname,
+      "..",
+      "..",
+      "public",
+      `vetor${req.params.index}.${req.params.format}`
+    ),
     JSON.stringify(vetor),
     "utf-8"
   );
 
   res.download(
-    resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`)
+    resolve(
+      __dirname,
+      "..",
+      "..",
+      "public",
+      `vetor${req.params.index}.${req.params.format}`
+    )
   );
 });
 
