@@ -1,8 +1,7 @@
 const routes = require("express").Router();
 const fs = require("fs");
 const { resolve } = require("path");
-
-const download = require("download");
+const http = require("http");
 
 const Post = require("../models/post.model");
 const split = require("../services/cortar-vetores");
@@ -66,26 +65,49 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
 
   const vetoresColetados = await coletarVetor();
   const ids = vetoresColetados.map((vetor) => vetor._id);
-  let urls = Array(+req.params.range).fill(0);
+  // const vetor = vetoresColetados.map((vet) => vet.vetor);
+
+  let urls = [];
 
   for (let i = 0; i < +req.params.range; i++) {
-    urls[
-      i
-    ] = `https://ic-iot.herokuapp.com/api/vetores/${ids[i]}/baixar/${req.params.format}`;
+    process.env.PORT
+      ? (urls[i] = {
+          url: `https://ic-iot.herokuapp.com/api/vetores/${ids[i]}/baixar/${req.params.format}`,
+          filename: `vetor${i}.${req.params.format}`,
+        })
+      : (urls[i] = {
+          url: `http://localhost:3000/api/vetores/${ids[i]}/baixar/${req.params.format}`,
+          filename: `vetor${i}.${req.params.format}`,
+        });
+
+    // fs.writeFileSync(
+    //   resolve(
+    //     __dirname,
+    //     "..",
+    //     "..",
+    //     "public",
+    //     `vetor${i}.${req.params.format}`
+    //   ),
+    //   JSON.stringify(vetor[i]),
+    //   "utf-8"
+    // );
+    // urls[i] = resolve(
+    //   __dirname,
+    //   "..",
+    //   "..",
+    //   "public",
+    //   `vetor${i}.${req.params.format}`
+    // );
   }
+  return res.json(urls);
 
-  console.log(urls);
-
-  (async () => {
-    await Promise.all(
-      urls.map((url, index) =>
-        download(url, `./vetor${index}.${req.params.format}`)
-      )
-    );
-    console.log("Images downloaded");
-  })();
-
-  res.status(200).send("Downloading...");
+  // urls.forEach((e) => {
+  //   fetch(e.url)
+  //     .then((res) => res.blob())
+  //     .then((blob) => {
+  //       saveAs(blob, e.filename);
+  //     });
+  // });
 });
 
 // Rota para listar todos os vetores
