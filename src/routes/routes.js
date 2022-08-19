@@ -2,6 +2,8 @@ const routes = require("express").Router();
 const fs = require("fs");
 const { resolve } = require("path");
 
+const download = require("download");
+
 const Post = require("../models/post.model");
 const split = require("../services/cortar-vetores");
 const coletarVetor = require("../services/coletarVetores");
@@ -64,39 +66,26 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
 
   const vetoresColetados = await coletarVetor();
   const ids = vetoresColetados.map((vetor) => vetor._id);
-  let arr = Array(+req.params.range).fill(0);
+  let urls = Array(+req.params.range).fill(0);
 
   for (let i = 0; i < +req.params.range; i++) {
-    let { vetor } = await Post.findById(ids[i]);
-
-    fs.writeFileSync(
-      resolve(
-        __dirname,
-        "..",
-        "..",
-        "public",
-        `vetor${i}.${req.params.format}`
-      ),
-      JSON.stringify(vetor),
-      "utf-8"
-    );
-
-    arr = resolve(
-      __dirname,
-      "..",
-      "..",
-      "public",
-      `vetor${i}.${req.params.format}`
-    );
+    urls[
+      i
+    ] = `https://ic-iot.herokuapp.com/api/vetores/${ids[i]}/baixar/${req.params.format}`;
   }
 
-  // for (let i = 0; i < +req.params.range; i++) {
-  //   res.download(arr[i]);
-  // }
+  console.log(urls);
 
-  res.download(arr);
+  (async () => {
+    await Promise.all(
+      urls.map((url, index) =>
+        download(url, `./vetor${index}.${req.params.format}`)
+      )
+    );
+    console.log("Images downloaded");
+  })();
 
-  console.log(arr);
+  res.status(200).send("Downloading...");
 });
 
 // Rota para listar todos os vetores
