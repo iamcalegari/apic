@@ -62,13 +62,15 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
   //   resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`)
   // );
 
-  const vetoresColetados = await cletarVetor();
+  const vetoresColetados = await coletarVetor();
   const ids = vetoresColetados.map((vetor) => vetor._id);
 
   for (let i = 0; i < +req.params.range; i++) {
+    let { vetor } = await Post.findById(ids[i]);
+
     fs.writeFileSync(
       resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`),
-      JSON.stringify(await Post.findById(ids[i])),
+      JSON.stringify(vetor),
       "utf-8"
     );
 
