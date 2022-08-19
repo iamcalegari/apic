@@ -99,7 +99,14 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
     //   `vetor${i}.${req.params.format}`
     // );
   }
-  return res.json(urls);
+
+  const url = urls.map((vetor) => vetor.url);
+  const filename = urls.map((vetor) => vetor.filename);
+  const data = {
+    url: url,
+    filename: filename,
+  };
+  return res.json(data);
 
   // urls.forEach((e) => {
   //   fetch(e.url)
