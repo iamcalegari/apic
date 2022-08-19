@@ -64,6 +64,7 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
 
   const vetoresColetados = await coletarVetor();
   const ids = vetoresColetados.map((vetor) => vetor._id);
+  let arr = Array(+req.params.range).fill([]);
 
   for (let i = 0; i < +req.params.range; i++) {
     let { vetor } = await Post.findById(ids[i]);
@@ -80,10 +81,18 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
       "utf-8"
     );
 
-    res.download(
-      resolve(__dirname, "..", "..", "public", `vetor${i}.${req.params.format}`)
+    arr = resolve(
+      __dirname,
+      "..",
+      "..",
+      "public",
+      `vetor${i}.${req.params.format}`
     );
   }
+
+  console.log(arr);
+
+  res.download(arr);
 });
 
 // Rota para listar todos os vetores
