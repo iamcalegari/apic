@@ -64,7 +64,7 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
 
   const vetoresColetados = await coletarVetor();
   const ids = vetoresColetados.map((vetor) => vetor._id);
-  let arr = Array(+req.params.range).fill([]);
+  let arr = Array(+req.params.range).fill(0);
 
   for (let i = 0; i < +req.params.range; i++) {
     let { vetor } = await Post.findById(ids[i]);
@@ -90,9 +90,11 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
     );
   }
 
-  for (let i = 0; i < +req.params.range; i++) {
-    res.download(arr[i]);
-  }
+  // for (let i = 0; i < +req.params.range; i++) {
+  //   res.download(arr[i]);
+  // }
+
+  res.download(arr);
 
   console.log(arr);
 });
