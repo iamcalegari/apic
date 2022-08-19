@@ -84,11 +84,15 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
   for (let i = 0; i < +req.params.range; i++) {
     process.env.PORT
       ? (urls[i] = {
-          url: `https://ic-iot.herokuapp.com/api/vetores/${ids[i]}/baixar/${req.params.format}`,
+          url: `https://ic-iot.herokuapp.com/api/vetores/${ids[i]}/${
+            i + 1
+          }/baixar/${req.params.format}`,
           filename: `vetor${i}.${req.params.format}`,
         })
       : (urls[i] = {
-          url: `http://localhost:3000/api/vetores/${ids[i]}/baixar/${req.params.format}`,
+          url: `http://localhost:3000/api/vetores/${ids[i]}/${i + 1}/baixar/${
+            req.params.format
+          }`,
           filename: `vetor${i}.${req.params.format}`,
         });
 
