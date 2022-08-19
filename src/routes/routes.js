@@ -90,9 +90,11 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
     );
   }
 
-  console.log(arr);
+  for (let i = 0; i < +req.params.range; i++) {
+    res.download(arr[i]);
+  }
 
-  res.download(arr);
+  console.log(arr);
 });
 
 // Rota para listar todos os vetores
