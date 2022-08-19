@@ -26,9 +26,9 @@ routes.post("/api/vetores/publicar", async (req, res) => {
 
 // Rota para baixar cada vetor da lista
 routes.get("/api/vetores/:id/:index/baixar/:format", async (req, res) => {
-  const { vetor } = await Post.findById(req.params.id);
+  const { vetor: vet } = await Post.findById(req.params.id);
 
-  console.log(vetor);
+  console.log(vet);
 
   fs.writeFileSync(
     resolve(
@@ -38,7 +38,7 @@ routes.get("/api/vetores/:id/:index/baixar/:format", async (req, res) => {
       "public",
       `vetor${req.params.index}.${req.params.format}`
     ),
-    JSON.stringify(vetor),
+    JSON.stringify(vet),
     "utf-8"
   );
 
