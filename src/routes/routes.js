@@ -42,25 +42,46 @@ routes.get("/api/vetores/:id/baixar/:format", async (req, res) => {
 
 // Rota para baixar todos os vetores da lista
 routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
-  const vetoresColetados = await coletarVetor();
-  const vetores = vetoresColetados
-    .slice(0, req.params.range)
-    .map((vetor) => vetor.vetor);
-  let arr = [];
+  // const vetoresColetados = await coletarVetor();
+  // const vetores = vetoresColetados
+  //   .slice(0, req.params.range)
+  //   .map((vetor) => vetor.vetor);
+  // let arr = [];
 
-  vetores.forEach((vetor) => {
-    arr = arr.concat(vetor);
-  });
+  // vetores.forEach((vetor) => {
+  //   arr = arr.concat(vetor);
+  // });
 
-  fs.writeFileSync(
-    resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`),
-    JSON.stringify(arr),
-    "utf-8"
-  );
+  // fs.writeFileSync(
+  //   resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`),
+  //   JSON.stringify(arr),
+  //   "utf-8"
+  // );
 
-  res.download(
-    resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`)
-  );
+  // res.download(
+  //   resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`)
+  // );
+
+  const vetoresColetados = await cletarVetor();
+  const ids = vetoresColetados.map((vetor) => vetor._id);
+
+  for (let i = 0; i < +req.params.range; i++) {
+    fs.writeFileSync(
+      resolve(
+        __dirname,
+        "..",
+        "..",
+        "public",
+        `vetor${i}.${req.params.format}`
+      ),
+      JSON.stringify(await Post.findById(ids[i])),
+      "utf-8"
+    );
+
+    res.download(
+      resolve(__dirname, "..", "..", "public", `vetor${i}.${req.params.format}`)
+    );
+  }
 });
 
 // Rota para listar todos os vetores
