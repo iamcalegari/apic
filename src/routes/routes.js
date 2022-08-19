@@ -67,19 +67,13 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
 
   for (let i = 0; i < +req.params.range; i++) {
     fs.writeFileSync(
-      resolve(
-        __dirname,
-        "..",
-        "..",
-        "public",
-        `vetor${i}.${req.params.format}`
-      ),
+      resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`),
       JSON.stringify(await Post.findById(ids[i])),
       "utf-8"
     );
 
     res.download(
-      resolve(__dirname, "..", "..", "public", `vetor${i}.${req.params.format}`)
+      resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`)
     );
   }
 });
