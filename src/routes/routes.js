@@ -1,25 +1,48 @@
 const routes = require("express").Router();
 const fs = require("fs");
 const { resolve } = require("path");
-const http = require("http");
 
 const Post = require("../models/post.model");
 const split = require("../services/cortar-vetores");
 const coletarVetor = require("../services/coletarVetores");
 
+// Rota para cortar os vetores em vetores de tamanho m (m -> compressing factor)
 routes.get("/api/vetores/split/:m", async (req, res) => {
   const array = split(req.params.m);
   return res.json(array);
 });
 
 // Rota para publicar um vetor
-routes.post("/api/vetores/publicar", async (req, res) => {
+routes.post("/api/vetores/publicar/:periodo", async (req, res) => {
   const { vetor } = req.body;
+  const dataHora = new Date();
+  const ultimoVetor = await Post.findOne({}, {}, { sort: { dataHora: -1 } });
+  let umMinuto = new Date();
+  umMinuto.setMinutes(umMinuto.getMinutes() + 1);
 
-  const vetores = await Post.create({
-    vetor,
-    tamanho: vetor.length,
-  });
+  let vetores = {};
+
+  if (ultimoVetor) {
+    let ultimaDataHora = new Date(ultimoVetor.dataHora);
+    ultimaDataHora.setMinutes(
+      ultimaDataHora.getMinutes() + Number(req.params.periodo)
+    );
+
+    vetores = await Post.create({
+      vetor,
+      tamanho: vetor.length,
+      leitura:
+        dataHora <= ultimaDataHora
+          ? ultimoVetor.leitura
+          : ultimoVetor.leitura + 1,
+    });
+  } else {
+    vetores = await Post.create({
+      vetor,
+      tamanho: vetor.length,
+      leitura: 1,
+    });
+  }
 
   return res.json(vetores);
 });
@@ -140,14 +163,50 @@ routes.get("/api/vetores/coletar", async (req, res) => {
   return res.json(vetoresColetados);
 });
 
+// Rota para listar todos os vetores de uma determinada leitura
+routes.get("/api/vetores/coletar/:leitura", async (req, res) => {
+  const vetoresColetados = await Post.find({ leitura: req.params.leitura });
+
+  return res.json(vetoresColetados);
+});
+
 // Rota para listar todos os ids dos vetores
-routes.get("/api/vetores/coletarid", async (req, res) => {
+routes.get("/api/vetores/coletarid/todas", async (req, res) => {
   const vetoresColetados = await coletarVetor();
   const ids = vetoresColetados.map((vetor) => vetor._id);
   const tamanhos = vetoresColetados.map((vetor) => vetor.tamanho);
   const data = {
     id: ids,
     tamanho: tamanhos,
+  };
+  return res.json(data);
+});
+
+// Rota para listar todos os ids dos vetores de uma determinada leitura
+routes.get("/api/vetores/coletarid/:leitura", async (req, res) => {
+  let vetoresColetados = [];
+  for (let i = req.params.leitura; i > 0; i--) {
+    vetoresColetados[req.params.leitura - i] = await Post.find({ leitura: i });
+  }
+
+  let ids = [];
+  let tamanhos = [];
+  let leituras = [];
+
+  vetoresColetados.forEach((vetor, index) => {
+    ids[index] = vetor.map((vet) => vet._id);
+  });
+  vetoresColetados.forEach((vetor, index) => {
+    tamanhos[index] = vetor.map((vet) => vet.tamanho);
+  });
+  vetoresColetados.forEach((vetor, index) => {
+    leituras[index] = vetor.map((vet) => vet.leitura);
+  });
+
+  const data = {
+    id: ids.flat(),
+    tamanho: tamanhos.flat(),
+    leitura: leituras.flat(),
   };
   return res.json(data);
 });

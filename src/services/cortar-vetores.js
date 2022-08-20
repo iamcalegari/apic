@@ -2,16 +2,31 @@ const Post = require("../models/post.model");
 
 const split = async (m) => {
   const coletarVetor = await Post.find();
+  const ultimoVetor = await Post.findOne({}, {}, { sort: { dataHora: -1 } });
 
-  const vetores = coletarVetor.map((vet) => vet.vetor);
+  let vetores = [];
 
-  let arr = [];
+  for (let i = 1; i <= ultimoVetor.leitura; i++) {
+    vetores[i - 1] = coletarVetor
+      .map((vet) => {
+        return vet.leitura === i ? vet.vetor : null;
+      })
+      .filter((vet) => vet !== null);
+  }
 
-  vetores.forEach((vetor) => {
-    arr = arr.concat(vetor);
-  });
+  let arr = Array(ultimoVetor.leitura).fill([]);
 
-  const arrayCortado = corte(arr, +m);
+  for (let i = 1; i <= ultimoVetor.leitura; i++) {
+    vetores[i - 1].forEach((vetor) => {
+      arr[i - 1] = arr[i - 1].concat(vetor);
+    });
+  }
+
+  let arrayCortado = [];
+
+  for (let i = 1; i <= ultimoVetor.leitura; i++) {
+    arrayCortado[i - 1] = corte(arr[i - 1], +m);
+  }
 
   try {
     const response = await Post.find();
@@ -22,12 +37,15 @@ const split = async (m) => {
     console.log(err);
   }
 
-  arrayCortado.map(async (vetor) => {
-    await Post.create({
-      vetor,
-      tamanho: vetor.length,
+  for (let i = 1; i <= ultimoVetor.leitura; i++) {
+    arrayCortado[i - 1].map(async (vetor) => {
+      await Post.create({
+        vetor,
+        tamanho: vetor.length,
+        leitura: i,
+      });
     });
-  });
+  }
 
   return arrayCortado;
 };
