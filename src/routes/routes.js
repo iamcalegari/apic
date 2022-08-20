@@ -175,9 +175,11 @@ routes.get("/api/vetores/coletarid/todas", async (req, res) => {
   const vetoresColetados = await coletarVetor();
   const ids = vetoresColetados.map((vetor) => vetor._id);
   const tamanhos = vetoresColetados.map((vetor) => vetor.tamanho);
+  const leituras = vetoresColetados.map((vetor) => vetor.leitura);
   const data = {
     id: ids,
     tamanho: tamanhos,
+    leitura: leituras,
   };
   return res.json(data);
 });
