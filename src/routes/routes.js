@@ -180,6 +180,7 @@ routes.get("/api/vetores/coletarid/todas", async (req, res) => {
     id: ids,
     tamanho: tamanhos,
     leitura: leituras,
+    leituraMax: Math.max(...leituras),
   };
   return res.json(data);
 });
