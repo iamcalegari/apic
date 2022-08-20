@@ -48,33 +48,36 @@ routes.post("/api/vetores/publicar/:periodo", async (req, res) => {
 });
 
 // Rota para baixar cada vetor da lista
-routes.get("/api/vetores/:id/:index/baixar/:format", async (req, res) => {
-  const { vetor: vet } = await Post.findById(req.params.id);
+routes.get(
+  "/api/vetores/:id/:index/:leitura/baixar/:format",
+  async (req, res) => {
+    const { vetor: vet } = await Post.findById(req.params.id);
 
-  console.log(vet);
+    console.log(vet);
 
-  fs.writeFileSync(
-    resolve(
-      __dirname,
-      "..",
-      "..",
-      "public",
-      `vetor${req.params.index}.${req.params.format}`
-    ),
-    JSON.stringify(vet),
-    "utf-8"
-  );
+    fs.writeFileSync(
+      resolve(
+        __dirname,
+        "..",
+        "..",
+        "public",
+        `L${req.params.leitura}-vetor${req.params.index}.${req.params.format}`
+      ),
+      JSON.stringify(vet),
+      "utf-8"
+    );
 
-  res.download(
-    resolve(
-      __dirname,
-      "..",
-      "..",
-      "public",
-      `vetor${req.params.index}.${req.params.format}`
-    )
-  );
-});
+    res.download(
+      resolve(
+        __dirname,
+        "..",
+        "..",
+        "public",
+        `L${req.params.leitura}.${req.params.format}`
+      )
+    );
+  }
+);
 
 // Rota para baixar todos os vetores da lista
 routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
@@ -187,6 +190,9 @@ routes.get("/api/vetores/coletarid/todas", async (req, res) => {
 
 // Rota para listar todos os ids dos vetores de uma determinada leitura
 routes.get("/api/vetores/coletarid/:leitura", async (req, res) => {
+  const vetoresTotais = await coletarVetor();
+  const lei = vetoresColetados.map((vetor) => vetor.leitura);
+
   let vetoresColetados = [];
   for (let i = req.params.leitura; i > 0; i--) {
     vetoresColetados[req.params.leitura - i] = await Post.find({ leitura: i });
@@ -210,6 +216,7 @@ routes.get("/api/vetores/coletarid/:leitura", async (req, res) => {
     id: ids.flat(),
     tamanho: tamanhos.flat(),
     leitura: leituras.flat(),
+    leituraMax: Math.max(...lei),
   };
   return res.json(data);
 });
