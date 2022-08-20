@@ -191,7 +191,7 @@ routes.get("/api/vetores/coletarid/todas", async (req, res) => {
 // Rota para listar todos os ids dos vetores de uma determinada leitura
 routes.get("/api/vetores/coletarid/:leitura", async (req, res) => {
   const vetoresTotais = await coletarVetor();
-  const lei = vetoresColetados.map((vetor) => vetor.leitura);
+  const lei = vetoresTotais.map((vetor) => vetor.leitura);
 
   let vetoresColetados = [];
   for (let i = req.params.leitura; i > 0; i--) {
