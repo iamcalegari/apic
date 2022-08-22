@@ -18,86 +18,6 @@ routes.get("/api/vetores/:leitura/split/:m", async (req, res) => {
   return res.json(array);
 });
 
-// Rota para publicar um vetor
-// routes.post("/api/vetores/publicar/:periodo", async (req, res) => {
-//   const { vetor } = req.body;
-//   const dataHora = new Date();
-//   const ultimoVetor = await Post.findOne({}, {}, { sort: { dataHora: -1 } });
-//   let umMinuto = new Date();
-//   umMinuto.setMinutes(umMinuto.getMinutes() + 1);
-
-//   let vetores = {};
-
-//   if (ultimoVetor) {
-//     let ultimaDataHora = new Date(ultimoVetor.dataHora);
-//     ultimaDataHora.setMinutes(
-//       ultimaDataHora.getMinutes() + Number(req.params.periodo)
-//     );
-
-//     vetores = await Post.create({
-//       vetor,
-//       tamanho: vetor.length,
-//       leitura:
-//         dataHora <= ultimaDataHora
-//           ? ultimoVetor.leitura
-//           : ultimoVetor.leitura + 1,
-//     });
-//   } else {
-//     vetores = await Post.create({
-//       vetor,
-//       tamanho: vetor.length,
-//       leitura: 1,
-//     });
-//   }
-
-//   return res.json(vetores);
-// });
-
-// Rota para publicar um vetor com leitura manual
-routes.post("/api/vetores/publicar/:leitura", async (req, res) => {
-  const { vetor } = req.body;
-
-  vetores = await Post.create({
-    vetor,
-    tamanho: vetor.length,
-    leitura: req.params.leitura,
-  });
-
-  return res.json(vetores);
-});
-
-// Rota para baixar cada vetor da lista individualmente
-routes.get(
-  "/api/vetores/:id/:leitura/:index/baixar/:format",
-  async (req, res) => {
-    const { vetor: vet } = await Post.findById(req.params.id);
-
-    console.log(vet);
-
-    fs.writeFileSync(
-      resolve(
-        __dirname,
-        "..",
-        "..",
-        "public",
-        `L${req.params.leitura}-vetor${req.params.index}.${req.params.format}`
-      ),
-      JSON.stringify(vet),
-      "utf-8"
-    );
-
-    res.download(
-      resolve(
-        __dirname,
-        "..",
-        "..",
-        "public",
-        `L${req.params.leitura}.${req.params.format}`
-      )
-    );
-  }
-);
-
 // Rota para baixar todos os vetores da lista (DEPRECATED)
 /*
 routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
@@ -196,6 +116,38 @@ routes.get("/api/vetores/coletarid/:leitura", async (req, res) => {
   return res.json(data);
 });
 
+// Rota para baixar cada vetor da lista individualmente
+routes.get(
+  "/api/vetores/:id/:leitura/:index/baixar/:format",
+  async (req, res) => {
+    const { vetor: vet } = await Post.findById(req.params.id);
+
+    console.log(vet);
+
+    fs.writeFileSync(
+      resolve(
+        __dirname,
+        "..",
+        "..",
+        "public",
+        `L${req.params.leitura}-vetor${req.params.index}.${req.params.format}`
+      ),
+      JSON.stringify(vet),
+      "utf-8"
+    );
+
+    res.download(
+      resolve(
+        __dirname,
+        "..",
+        "..",
+        "public",
+        `L${req.params.leitura}.${req.params.format}`
+      )
+    );
+  }
+);
+
 // Rota para listar os vetores em um vetor so (DEPRECATED)
 /*
 routes.get("/api/vetores/coletarall", async (req, res) => {
@@ -212,6 +164,56 @@ routes.get("/api/vetores/coletarall", async (req, res) => {
   return res.json(arr);
 });
 */
+
+// Rota para publicar um vetor com Leitura periodica (DEPRECATED)
+/*
+routes.post("/api/vetores/publicar/:periodo", async (req, res) => {
+  const { vetor } = req.body;
+  const dataHora = new Date();
+  const ultimoVetor = await Post.findOne({}, {}, { sort: { dataHora: -1 } });
+  let umMinuto = new Date();
+  umMinuto.setMinutes(umMinuto.getMinutes() + 1);
+
+  let vetores = {};
+
+  if (ultimoVetor) {
+    let ultimaDataHora = new Date(ultimoVetor.dataHora);
+    ultimaDataHora.setMinutes(
+      ultimaDataHora.getMinutes() + Number(req.params.periodo)
+    );
+
+    vetores = await Post.create({
+      vetor,
+      tamanho: vetor.length,
+      leitura:
+        dataHora <= ultimaDataHora
+          ? ultimoVetor.leitura
+          : ultimoVetor.leitura + 1,
+    });
+  } else {
+    vetores = await Post.create({
+      vetor,
+      tamanho: vetor.length,
+      leitura: 1,
+    });
+  }
+
+  return res.json(vetores);
+});
+*/
+
+// Rota para publicar um vetor com leitura manual
+routes.post("/api/vetores/publicar/:leitura", async (req, res) => {
+  const { vetor } = req.body;
+
+  vetores = await Post.create({
+    vetor,
+    tamanho: vetor.length,
+    leitura: req.params.leitura,
+  });
+
+  return res.json(vetores);
+});
 
 // Rota para deletar todos os vetores
 routes.delete("/api/vetores/deletar", async (req, res) => {
