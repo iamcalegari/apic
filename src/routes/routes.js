@@ -13,36 +13,49 @@ routes.get("/api/vetores/split/:m", async (req, res) => {
 });
 
 // Rota para publicar um vetor
-routes.post("/api/vetores/publicar/:periodo", async (req, res) => {
+// routes.post("/api/vetores/publicar/:periodo", async (req, res) => {
+//   const { vetor } = req.body;
+//   const dataHora = new Date();
+//   const ultimoVetor = await Post.findOne({}, {}, { sort: { dataHora: -1 } });
+//   let umMinuto = new Date();
+//   umMinuto.setMinutes(umMinuto.getMinutes() + 1);
+
+//   let vetores = {};
+
+//   if (ultimoVetor) {
+//     let ultimaDataHora = new Date(ultimoVetor.dataHora);
+//     ultimaDataHora.setMinutes(
+//       ultimaDataHora.getMinutes() + Number(req.params.periodo)
+//     );
+
+//     vetores = await Post.create({
+//       vetor,
+//       tamanho: vetor.length,
+//       leitura:
+//         dataHora <= ultimaDataHora
+//           ? ultimoVetor.leitura
+//           : ultimoVetor.leitura + 1,
+//     });
+//   } else {
+//     vetores = await Post.create({
+//       vetor,
+//       tamanho: vetor.length,
+//       leitura: 1,
+//     });
+//   }
+
+//   return res.json(vetores);
+// });
+
+// Rota para publicar um vetor com leitura manual
+routes.post("/api/vetores/publicar/:leitura", async (req, res) => {
   const { vetor } = req.body;
-  const dataHora = new Date();
-  const ultimoVetor = await Post.findOne({}, {}, { sort: { dataHora: -1 } });
-  let umMinuto = new Date();
-  umMinuto.setMinutes(umMinuto.getMinutes() + 1);
 
-  let vetores = {};
-
-  if (ultimoVetor) {
-    let ultimaDataHora = new Date(ultimoVetor.dataHora);
-    ultimaDataHora.setMinutes(
-      ultimaDataHora.getMinutes() + Number(req.params.periodo)
-    );
-
-    vetores = await Post.create({
-      vetor,
-      tamanho: vetor.length,
-      leitura:
-        dataHora <= ultimaDataHora
-          ? ultimoVetor.leitura
-          : ultimoVetor.leitura + 1,
-    });
-  } else {
-    vetores = await Post.create({
-      vetor,
-      tamanho: vetor.length,
-      leitura: 1,
-    });
-  }
+  vetores = await Post.create({
+    vetor,
+    tamanho: vetor.length,
+    leitura: req.params.leitura,
+  });
 
   return res.json(vetores);
 });
@@ -81,26 +94,6 @@ routes.get(
 
 // Rota para baixar todos os vetores da lista
 routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
-  // const vetoresColetados = await coletarVetor();
-  // const vetores = vetoresColetados
-  //   .slice(0, req.params.range)
-  //   .map((vetor) => vetor.vetor);
-  // let arr = [];
-
-  // vetores.forEach((vetor) => {
-  //   arr = arr.concat(vetor);
-  // });
-
-  // fs.writeFileSync(
-  //   resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`),
-  //   JSON.stringify(arr),
-  //   "utf-8"
-  // );
-
-  // res.download(
-  //   resolve(__dirname, "..", "..", "public", `vetor.${req.params.format}`)
-  // );
-
   const vetoresColetados = await coletarVetor();
   const ids = vetoresColetados.map((vetor) => vetor._id);
   // const vetor = vetoresColetados.map((vet) => vet.vetor);
@@ -121,25 +114,6 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
           }`,
           filename: `vetor${i}.${req.params.format}`,
         });
-
-    // fs.writeFileSync(
-    //   resolve(
-    //     __dirname,
-    //     "..",
-    //     "..",
-    //     "public",
-    //     `vetor${i}.${req.params.format}`
-    //   ),
-    //   JSON.stringify(vetor[i]),
-    //   "utf-8"
-    // );
-    // urls[i] = resolve(
-    //   __dirname,
-    //   "..",
-    //   "..",
-    //   "public",
-    //   `vetor${i}.${req.params.format}`
-    // );
   }
 
   const url = urls.map((vetor) => vetor.url);
@@ -149,14 +123,6 @@ routes.get("/api/vetores/:range/baixarall/:format", async (req, res) => {
     filename: filename,
   };
   return res.json(data);
-
-  // urls.forEach((e) => {
-  //   fetch(e.url)
-  //     .then((res) => res.blob())
-  //     .then((blob) => {
-  //       saveAs(blob, e.filename);
-  //     });
-  // });
 });
 
 // Rota para listar todos os vetores
