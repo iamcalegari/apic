@@ -29,7 +29,7 @@ const split = async (m, l = null) => {
       await Post.create({
         vetor,
         tamanho: vetor.length,
-        leitura: l,
+        leitura: vetor.leitura,
       });
     });
   } else {

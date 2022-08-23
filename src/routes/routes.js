@@ -8,7 +8,7 @@ const coletarVetor = require("../services/coletarVetores");
 
 // Rota para cortar os vetores em vetores de tamanho m (m -> compressing factor)
 routes.get("/api/vetores/split/:m", async (req, res) => {
-  const array = split(req.params.m);
+  const array = split(+req.params.m);
   return res.json(array);
 });
 
@@ -111,7 +111,7 @@ routes.get("/api/vetores/coletarid/:leitura", async (req, res) => {
     id: ids.flat(),
     tamanho: tamanhos.flat(),
     leitura: leituras.flat(),
-    leituraMax: req.params.leitura,
+    leituraMax: +req.params.leitura,
   };
   return res.json(data);
 });
