@@ -116,7 +116,7 @@ routes.get("/api/vetores/coletarid/:leitura", async (req, res) => {
   return res.json(data);
 });
 
-// Rota para baixar cada vetor da lista individualmente
+// Rota para baixar cada vetor da lista individualmente.
 routes.get(
   "/api/vetores/:id/:leitura/:index/baixar/:format",
   async (req, res) => {
@@ -130,7 +130,7 @@ routes.get(
         "..",
         "..",
         "public",
-        `L${req.params.leitura}-vetor${req.params.index}.${req.params.format}`
+        `L${req.params.leitura}_vetor${req.params.index}.${req.params.format}`
       ),
       JSON.stringify(vet),
       "utf-8"
@@ -142,7 +142,7 @@ routes.get(
         "..",
         "..",
         "public",
-        `L${req.params.leitura}.${req.params.format}`
+        `L${req.params.leitura}_vetor${req.params.index}.${req.params.format}`
       )
     );
   }
