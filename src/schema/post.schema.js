@@ -8,6 +8,10 @@ const jsonSchema = {
     type: Number,
     description: "Número da leitura do vetor.",
   },
+  nova_leitura: {
+    type: Boolean,
+    description: "Informa se é uma nova leitura ou não"
+  },
   tamanho: {
     type: Number,
     description: "Tamanho do array.",

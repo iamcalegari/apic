@@ -6,6 +6,8 @@ const Post = require("../models/post.model");
 const split = require("../services/cortar-vetores");
 const coletarVetor = require("../services/coletarVetores");
 
+
+
 // Rota para cortar os vetores em vetores de tamanho m (m -> compressing factor)
 routes.get("/api/vetores/split/:m", async (req, res) => {
   const array = split(+req.params.m);
@@ -202,9 +204,35 @@ routes.post("/api/vetores/publicar/:periodo", async (req, res) => {
 });
 */
 
+// Rota para publicar um vetor com leitura automatica
+routes.post("/api/vetores/publicar/auto", async (req, res) => {
+  const { vetor, nova_leitura } = req.body;
+  
+  const { leitura: ultimaLeitura} = await Post.findOne({}, {}, { sort: { dataHora: -1 } });
+  
+  if (nova_leitura) {
+    const vetores = await Post.create({
+      vetor,
+      tamanho: vetor.length,
+      leitura: ultimaLeitura+1,
+    });
+
+    return res.json(vetores);
+  }
+    
+  const vetores = await Post.create({
+    vetor,
+    tamanho: vetor.length,
+    leitura: ultimaLeitura, 
+  });
+
+  return res.json(vetores);
+})
+
 // Rota para publicar um vetor com leitura manual
 routes.post("/api/vetores/publicar/:leitura", async (req, res) => {
   const { vetor } = req.body;
+  
 
   vetores = await Post.create({
     vetor,
