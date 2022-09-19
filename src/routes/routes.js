@@ -205,12 +205,14 @@ routes.post("/api/vetores/publicar/:periodo", async (req, res) => {
 // Rota para publicar um vetor com leitura automatica
 routes.post("/api/vetores/publicar/auto", async (req, res) => {
   const { vetor, nova_leitura } = req.body;
-
-  const { leitura: ultimaLeitura } = await Post.findOne(
-    {},
-    {},
-    { sort: { dataHora: -1 } }
-  );
+  let ultimaLeitura = 0;
+  try {
+    const { leitura: ultimaLeitura } = await Post.findOne(
+      {},
+      {},
+      { sort: { dataHora: -1 } }
+    );
+  } catch {}
 
   if (nova_leitura) {
     const vetores = await Post.create({
