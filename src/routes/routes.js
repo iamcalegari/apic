@@ -205,15 +205,14 @@ routes.post("/api/vetores/publicar/:periodo", async (req, res) => {
 // Rota para publicar um vetor com leitura automatica
 routes.post("/api/vetores/publicar/auto", async (req, res) => {
   const { vetor, nova_leitura } = req.body;
-  let ultimaLeitura = 0;
-  try {
-    const { leitura: ultimaLeitura } = await Post.findOne(
-      {},
-      {},
-      { sort: { dataHora: -1 } }
-    );
-  } catch {}
-
+  const ultimoVetor = await Post.findOne({}, {}, { sort: { dataHora: -1 } });
+  let ultimaLeitura;
+  if (!ultimoVetor) {
+    ultimaLeitura = 0;
+  } else {
+    const { leitura } = ultimoVetor;
+    ultimaLeitura = leitura;
+  }
   if (nova_leitura) {
     const vetores = await Post.create({
       vetor,
@@ -223,7 +222,6 @@ routes.post("/api/vetores/publicar/auto", async (req, res) => {
 
     return res.json(vetores);
   }
-
   const vetores = await Post.create({
     vetor,
     tamanho: vetor.length,
@@ -244,6 +242,7 @@ routes.post("/api/vetores/publicar/:leitura", async (req, res) => {
   });
 
   return res.json(vetores);
+  res.sendStatus(200);
 });
 
 // Rota para deletar todos os vetores
